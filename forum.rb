@@ -61,7 +61,8 @@ def require_user_signin(return_to = nil)
   return if session.key?(:username)
 
   session[:error] = 'You must be signed in.'
-  redirect "/users/signin?return_to=#{return_to}"
+  session[:return_to] = return_to
+  redirect "/users/signin"
 end
 
 # Convert value of query parameter to integer
@@ -125,11 +126,12 @@ end
 # Signin a user
 post '/users/signin' do
   username = params[:username]
+  return_to = session.delete(:return_to)
 
   if valid_credentials?(username, params[:password])
     session[:username] = username
     session[:success] = 'Welcome!'
-    redirect params[:return_to] || '/'
+    redirect return_to || '/'
   else
     session[:error] = 'Invalid credentials!'
     status 422
