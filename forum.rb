@@ -64,7 +64,7 @@ def require_user_signin(return_to = nil)
 end
 
 # Convert value of query parameter to integer
-def page(value)
+def format_page(value)
   return 1 if value.nil? || value.empty?
 
   value.to_i
@@ -81,20 +81,27 @@ def max_page(items, limit)
   max.zero? ? 1 : max
 end
 
+def invalid_page?(page, max_page)
+  return true unless (page =~ /[^0-9]/).nil?
+  return true if format_page(page) > max_page
+
+  false
+end
+
 # Render all posts
 get '/' do
   require_user_signin(request.url)
 
-  params[:page] = page(params[:page])
-  offset = offset(params[:page])
   limit = 10
-  @posts = @storage.all_posts(offset, limit)
   @max_posts_on_index = max_page(@storage.all_posts_count, limit.to_f)
 
-  if params[:page] > @max_posts_on_index
+  if invalid_page?(params[:page], @max_posts_on_index)
     session[:error] = 'Invalid page!'
     redirect '/'
   else
+    params[:page] = format_page(params[:page])
+    offset = offset(params[:page])
+    @posts = @storage.all_posts(offset, limit)
     erb :index
   end
 end
@@ -152,18 +159,17 @@ get '/post' do
   require_user_signin(request.url)
 
   post_id = params[:id].to_i
-  @post = load_post(post_id)
-
-  params[:post_comments_page] = page(params[:post_comments_page])
-  offset = offset(params[:post_comments_page])
   limit = 10
-  @comments = @storage.comments_on_post(post_id, offset, limit)
+  @post = load_post(post_id)
   @max_comments_on_post = max_page(@post[:comments], limit.to_f)
 
-  if params[:post_comments_page] > @max_comments_on_post
+  if invalid_page?(params[:post_comments_page], @max_comments_on_post)
     session[:error] = 'Invalid page!'
     redirect "/post?id=#{post_id}"
   else
+    params[:post_comments_page] = format_page(params[:post_comments_page])
+    offset = offset(params[:post_comments_page])
+    @comments = @storage.comments_on_post(post_id, offset, limit)
     erb :post
   end
 end
@@ -316,17 +322,17 @@ end
 get '/profile' do
   require_user_signin(request.url)
 
-  params[:posts_profile_page] = page(params[:posts_profile_page])
   user = session[:username]
-  offset = offset(params[:posts_profile_page])
   limit = 10
-  @posts = @storage.all_posts_by_user(user, offset, limit)
   @max_posts_on_profile = max_page(@storage.count_of_posts_by_user(user), limit.to_f)
 
-  if params[:posts_profile_page] > @max_posts_on_profile
+  if invalid_page?(params[:posts_profile_page], @max_posts_on_profile)
     session[:error] = 'Invalid page!'
     redirect '/profile'
   else
+    params[:posts_profile_page] = format_page(params[:posts_profile_page])
+    offset = offset(params[:posts_profile_page])
+    @posts = @storage.all_posts_by_user(user, offset, limit)
     erb :profile
   end
 end
