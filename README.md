@@ -10,13 +10,9 @@ Forum uses a simple database dseign consisting of 2 entities, post and comment. 
 
 ## Install
 
-Bundler has been used for dependency management. To begin with, run `bundle install` to install gems specified in the `Gemfile`.
+Bundler has been used for dependency management. The application folder already contains the `Gemfile` and `Gemfile.lock` to add the required gems and their dependencies using `bundler/setup` required in `forum.rb`.
 
-  ```zsh
-  bundle install
-  ```
-
-If you face any problem, delete `Gemfile.lock` and run `bundle install` again.
+If you face any problem, delete `Gemfile.lock` and run `bundle install`.
 
 ## Run
 
