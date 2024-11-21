@@ -56,11 +56,11 @@ helpers do
 end
 
 # Check if user is signedin
-def require_user_signin
+def require_user_signin(return_to = nil)
   return if session.key?(:username)
 
   session[:error] = 'You must be signed in.'
-  redirect '/users/signin'
+  redirect "/users/signin?return_to=#{return_to}"
 end
 
 # Convert value of query parameter to integer
@@ -83,7 +83,7 @@ end
 
 # Render all posts
 get '/' do
-  require_user_signin
+  require_user_signin(request.url)
 
   params[:page] = page(params[:page])
   offset = offset(params[:page])
@@ -121,7 +121,7 @@ post '/users/signin' do
   if valid_credentials?(username, params[:password])
     session[:username] = username
     session[:success] = 'Welcome!'
-    redirect '/'
+    redirect params[:return_to] || '/'
   else
     session[:error] = 'Invalid credentials!'
     status 422
@@ -149,7 +149,7 @@ end
 
 # Render post page
 get '/post' do
-  require_user_signin
+  require_user_signin(request.url)
 
   post_id = params[:id].to_i
   @post = load_post(post_id)
@@ -170,14 +170,14 @@ end
 
 # Render form to create post
 get '/new' do
-  require_user_signin
+  require_user_signin(request.url)
 
   erb :new
 end
 
 # Create a post
 post '/create' do
-  require_user_signin
+  require_user_signin(request.url)
 
   title = params[:title].strip
 
@@ -200,7 +200,7 @@ end
 
 # Edit a post
 post '/post/:post_id/edit' do |post_id|
-  require_user_signin
+  require_user_signin(request.url)
 
   post_id = post_id.to_i
   if valid_post_and_author?(post_id)
@@ -214,7 +214,7 @@ end
 
 # Delete a post
 post '/post/:post_id/delete' do |post_id|
-  require_user_signin
+  require_user_signin(request.url)
 
   post_id = post_id.to_i
   if valid_post_and_author?(post_id)
@@ -227,7 +227,7 @@ end
 
 # Add a comment
 post '/post/:post_id/add_comment' do |post_id|
-  require_user_signin
+  require_user_signin(request.url)
 
   post_id = post_id.to_i
   valid_post_id?(post_id)
@@ -263,7 +263,7 @@ end
 
 # Render comment
 get '/comment' do
-  require_user_signin
+  require_user_signin(request.url)
 
   post_id = params[:post_id].to_i
   comment_id = params[:comment_id].to_i
@@ -279,7 +279,7 @@ end
 
 # Edit a comment
 post '/post/:post_id/comment/:comment_id/edit' do |post_id, comment_id|
-  require_user_signin
+  require_user_signin(request.url)
 
   post_id = post_id.to_i
   comment_id = comment_id.to_i
@@ -300,7 +300,7 @@ end
 
 # Delete a comment
 post '/post/:post_id/comment/:comment_id/delete' do |post_id, comment_id|
-  require_user_signin
+  require_user_signin(request.url)
 
   post_id = post_id.to_i
   comment_id = comment_id.to_i
@@ -314,7 +314,7 @@ end
 
 # Render profile page
 get '/profile' do
-  require_user_signin
+  require_user_signin(request.url)
 
   params[:posts_profile_page] = page(params[:posts_profile_page])
   user = session[:username]
@@ -332,5 +332,6 @@ get '/profile' do
 end
 
 not_found do
+  session[:error] = 'Page not found!'
   redirect '/'
 end

@@ -1,4 +1,4 @@
-<form method='post' action='/users/signin'>
+<form method='post' action='/users/signin?return_to=<%= params[:return_to] %>'>
   <div>
     <label for='username'>Username:
       <input name='username' id='username'>
