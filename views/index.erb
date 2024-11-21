@@ -1,0 +1,30 @@
+<% @posts.each do |post| %>
+  <div>
+    <%= post[:order] %>.
+    <a href='/post?id=<%= post[:id] %>'><%= post[:title] %></a>
+    <%= post[:username] %>,
+    <%= format_time(post[:created_on]) %>,
+    <%= format_comments_count(post[:comments]) %>
+  </div>
+<% end %>
+
+<p>
+  <% if @max_posts_on_index > 1 %>
+    <% if params[:page] > 1 %>
+      <a href='/?page=<%= params[:page] - 1 %>'>Previous</a>
+    <% end %>
+    <%= params[:page] %>
+    <% if params[:page] < @max_posts_on_index %>
+      <a href='/?page=<%= params[:page] + 1 %>'>Next</a>
+    <% end %>
+  <% end %>
+</p>
+
+<a href='/new'>Create post</a>
+
+<form method='post' action='/users/signout'>
+  <p class='user-status'>
+    Signed in as <a href='/profile'><%= session[:username] %></a>
+    <button type='submit'>Sign out</button>
+  </p>
+</form>

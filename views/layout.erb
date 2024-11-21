@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <title>Forum</title>
+    <meta charset="UTF-8">
+    <link rel="preconnect" href="https://rsms.me/">
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <link rel="stylesheet" href="/forum.css">
+  </head>
+  <body>
+    <header>
+      <p><%== yield_content :header_link %></p>
+    </header>
+    
+    <% if session[:error] %>
+      <p class="flash error"><%= session.delete(:error) %></p>
+    <% end %>
+
+    <% if session[:success] %>
+      <p class="flash success"><%= session.delete(:success) %></p>
+    <% end %>
+
+    <main>
+      <%== yield %>
+    </main>
+  </body>
+</html>

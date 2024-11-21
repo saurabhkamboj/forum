@@ -1,0 +1,25 @@
+<strong>Lastest posts</strong><br>
+
+<% @posts.each do |post| %>
+  <div>
+    <a href='/post?id=<%= post[:id] %>'><%= post[:title] %></a>,
+    <%= format_time(post[:created_on]) %>,
+    <%= format_comments_count(post[:comments]) %>
+  </div>
+<% end %>
+
+<p>
+  <% if @max_posts_on_profile > 1 %>
+    <% if params[:posts_profile_page] > 1 %>
+      <a href='/profile?posts_profile_page=<%= params[:posts_profile_page] - 1 %>'>Previous</a>
+    <% end %>
+    <%= params[:posts_profile_page] %>
+    <% if params[:posts_profile_page] < @max_posts_on_profile %>
+      <a href='/profile?posts_profile_page=<%= params[:posts_profile_page] + 1 %>'>Next</a>
+    <% end %>
+  <% end %>
+</p>
+
+<% content_for :header_link do %>
+  <a href='/'>Index</a>
+<% end %>

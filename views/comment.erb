@@ -1,0 +1,7 @@
+<form method='post' action='/post/<%= @comment[:post_id] %>/comment/<%= @comment[:id] %>/edit'>
+  <div>
+    <textarea name='comment_content' rows='5' cols='100'><%= @comment[:content] %></textarea>
+  </div>
+  <button type='submit'>Save</button>
+  <a href='/post?id=<%= @comment[:post_id] %>'>Cancel</a>
+</form>

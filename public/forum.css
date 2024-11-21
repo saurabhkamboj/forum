@@ -1,0 +1,32 @@
+:root {
+  font-family: Inter, sans-serif;
+  font-feature-settings: 'liga' 1, 'calt' 1; /* fix for Chrome */
+}
+@supports (font-variation-settings: normal) {
+  :root { font-family: InterVariable, sans-serif; }
+}
+
+body {
+  padding: 1em;
+}
+
+.flash {
+  padding: 10px;
+}
+
+.flash.error {
+  background: #FFCFBF;
+}
+
+.flash.success {
+  background: #CBF2E5;
+}
+
+.user-status {
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+form.inline {
+  display: inline;
+}

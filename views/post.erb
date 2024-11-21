@@ -1,0 +1,68 @@
+<strong><%= @post[:title] %></strong><br>
+
+<small>
+  <%= @post[:username] %>,
+  <%= format_time(@post[:created_on]) %>,
+  <%= format_comments_count(@post[:comments]) %>
+
+  <% if user_is_author?(@post) %>
+    <% if edit_post?(params[:edit_post]) %>
+      <form method='post' action='/post/<%= params[:id] %>/edit'>
+        <div>
+          <textarea name='content' rows='20' cols='100'><%= @post[:content] %></textarea>
+        </div>
+        <button type='submit'>Save</button>
+        <a href='/post?id=<%= params[:id] %>'>Cancel</a>
+      </form>
+    <% else %>
+      <a href='/post?id=<%= params[:id] %>&edit_post=true'>Edit</a>
+      <form class='inline' method='post' action='/post/<%= params[:id] %>/delete'>
+        <button type='submit'>Delete</button>
+      </form>
+    <% end %>
+  <% end %>
+</small>
+
+<% unless user_is_author?(@post) && edit_post?(params[:edit_post]) %>
+  <p><%= @post[:content] %></p>
+
+  <form method='post' action='/post/<%= params[:id] %>/add_comment'>
+    <div>
+      <textarea name='content' rows='5' cols='100'><%= params[:content] %></textarea>
+    </div>
+    <button type='submit'>Add comment</button>
+  </form><br>
+
+  <% @comments.each do |comment| %>
+    <div>
+      <small>
+        <b><%= comment[:username] %></b>,
+        <%= format_time(comment[:created_on]) %>
+        <% if user_is_author?(comment) %>
+          <a href='/comment?post_id=<%= params[:id] %>&comment_id=<%= comment[:id] %>'>Edit</a>
+          <form class='inline' method='post' action='/post/<%= params[:id] %>/comment/<%= comment[:id] %>/delete'>
+            <button type='submit'>Delete</button>
+          </form></small>
+        <% end %>
+      </small><br>
+
+      <%= comment[:content] %>
+    </div>
+  <% end %>
+
+  <p>
+    <% if @max_comments_on_post > 1 %>
+      <% if params[:post_comments_page] > 1 %>
+        <a href='/post?id=<%= params[:id] %>&post_comments_page=<%= params[:post_comments_page] - 1 %>'>Previous</a>
+      <% end %>
+      <%= params[:post_comments_page] %>
+      <% if params[:post_comments_page] < @max_comments_on_post %>
+        <a href='/post?id=<%= params[:id] %>&post_comments_page=<%= params[:post_comments_page] + 1 %>'>Next</a>
+      <% end %>
+    <% end %>
+  </p>
+<% end %>
+
+<% content_for :header_link do %>
+  <a href='/'>Index</a>
+<% end %>
