@@ -83,6 +83,7 @@ def max_page(items, limit)
   max.zero? ? 1 : max
 end
 
+# Validate page number
 def invalid_page?(page, max_page)
   return true unless (page =~ /[^0-9]/).nil?
   return true if format_page(page) > max_page
