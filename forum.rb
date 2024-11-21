@@ -66,7 +66,7 @@ end
 
 # Convert value of query parameter to integer
 def format_page(value)
-  return 1 if value.nil? || value.empty?
+  return 1 if value.nil? || value.empty? || value.count('0') == value.size
 
   value.to_i
 end
