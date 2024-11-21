@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
+require 'bundler/setup'
 require 'sinatra'
 require 'sinatra/content_for'
 require 'tilt/erubis'
 require 'BCrypt'
-require 'Time'
+require 'time'
 
 require_relative 'database_persistence'
 
