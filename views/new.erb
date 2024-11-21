@@ -5,7 +5,7 @@
   </div>
   <label for='content'>Content:</label>
   <div>
-    <textarea name='content' id='content' rows='20' cols='100'><%= @content %></textarea>
+    <textarea name='content' id='content' rows='20' cols='100'><%= params[:content] %></textarea>
   </div>
   <button type='submit'>Post</button>
   <a href='/'>Cancel</a>
