@@ -1,6 +1,6 @@
 # Forum
 
-Forum uses a simple database dseign consisting of 2 entities, post and comment. Users can create many posts & add many comments, and interact with other users.
+Forum uses a simple database design consisting of 2 entities, post and comment. Users can create many posts & add many comments, and interact with other users.
 
 ## Details
 
