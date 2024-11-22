@@ -183,7 +183,8 @@ class DatabasePersistence
           username text NOT NULL REFERENCES users(username) ON DELETE CASCADE,
           title varchar(100) NOT NULL,
           content text NOT NULL,
-          created_on timestamp NOT NULL DEFAULT NOW()
+          created_on timestamp NOT NULL DEFAULT NOW(),
+          CHECK (id > 0)
         );
 
         CREATE TABLE comments (
@@ -191,7 +192,8 @@ class DatabasePersistence
           post_id int NOT NULL REFERENCES posts(id) ON DELETE CASCADE,
           username text NOT NULL REFERENCES users(username) ON DELETE CASCADE,
           content text NOT NULL,
-          created_on timestamp NOT NULL DEFAULT NOW()
+          created_on timestamp NOT NULL DEFAULT NOW(),
+          CHECK (id > 0)
         );
 
         INSERT INTO users

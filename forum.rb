@@ -34,6 +34,7 @@ helpers do
     return '1 hour ago' if difference == 1
     return "#{difference} hours ago" if difference < 24
     return "#{days} days ago" if days > 1
+
     '1 day ago'
   end
 
@@ -52,6 +53,7 @@ helpers do
   def format_comments_count(count)
     return 'no comments' if count.zero?
     return '1 comment' if count == 1
+
     "#{count} comments"
   end
 end
@@ -62,7 +64,7 @@ def require_user_signin(return_to = nil)
 
   session[:error] = 'You must be signed in.'
   session[:return_to] = return_to
-  redirect "/users/signin"
+  redirect '/users/signin'
 end
 
 # Convert value of query parameter to integer
@@ -127,12 +129,11 @@ end
 # Signin a user
 post '/users/signin' do
   username = params[:username]
-  return_to = session.delete(:return_to)
 
   if valid_credentials?(username, params[:password])
     session[:username] = username
     session[:success] = 'Welcome!'
-    redirect return_to || '/'
+    redirect session.delete(:return_to) || '/'
   else
     session[:error] = 'Invalid credentials!'
     status 422
@@ -245,6 +246,7 @@ post '/post/:post_id/add_comment' do |post_id|
   content = params[:content]
   if content.strip.empty?
     session[:error] = 'Comment cannot be empty!'
+    status 422
   else
     @storage.add_comment(post_id, session[:username], content)
     session[:success] = 'Your comment was added.'
@@ -271,7 +273,7 @@ def valid_comment_and_author?(comment_id, post_id)
   comment[:username] == session[:username]
 end
 
-# Render comment
+# Render a comment
 get '/comment' do
   require_user_signin(request.url)
 
@@ -298,6 +300,7 @@ post '/post/:post_id/comment/:comment_id/edit' do |post_id, comment_id|
   if valid_comment_and_author?(comment_id, post_id)
     if content.strip.empty?
       session[:error] = 'Comment cannot be empty!'
+      status 422
       redirect "/comment?post_id=#{post_id}&comment_id=#{comment_id}"
     else
       @storage.edit_comment(comment_id, content)
